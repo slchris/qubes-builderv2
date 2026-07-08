@@ -40,13 +40,15 @@ components:
         - CCA190F75CEA7FAB8A49F00045D10727855239D3
 
 executor:
-  # Fedora ships podman (rootless), not docker. builderv2 supports it natively:
-  # executor type 'podman' uses PodmanClient. base_url points at the rootless
-  # podman socket (systemctl --user enable --now podman.socket).
+  # Fedora ships podman; builderv2 supports it natively (PodmanClient). Gentoo
+  # template build needs to mount /dev inside the (privileged) container for the
+  # chroot — ROOTLESS podman can't (mount: permission denied), so point at the
+  # ROOTFUL podman socket (systemctl enable --now podman.socket as root). The
+  # user is added to a group that can read /run/podman/podman.sock.
   type: podman
   options:
     image: "qubes-builder-fedora:latest"
-    base_url: "unix:///run/user/1000/podman/podman.sock"
+    base_url: "unix:///run/podman/podman.sock"
 
 stages:
   - fetch
