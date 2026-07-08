@@ -1,5 +1,20 @@
-FROM docker.io/library/fedora@sha256:3da64cb89971a1cdbc6046e307eeebcb54f7281c0a606ee48d9995473f6b88d5
+# Base image is Fedora 43 (not the sha256-pinned 42): TUNA mirrors Fedora under
+# releases/43 (200) but not releases/42 (404), so the pinned 42 can't dnf-install
+# from the China mirror. 43 matches the tpl-gentoo-builder host too. Pulled via
+# the registry mirror (hub.infra.plz.ac) configured in registries.conf.
+FROM docker.io/library/fedora:43
 LABEL org.opencontainers.image.authors="Frédéric Pierret <frederic@invisiblethingslab.com>"
+
+# China mirror: point the image's dnf at TUNA so the big install below isn't
+# fetched over the wall (default metalink -> mirrors.fedoraproject.org is slow
+# from CN and made the build time out). ARG so it can be overridden at build time.
+ARG FEDORA_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/fedora
+RUN for r in /etc/yum.repos.d/fedora.repo /etc/yum.repos.d/fedora-updates.repo; do \
+        [ -f "$r" ] && sed -i \
+            -e 's|^metalink=|#metalink=|g' \
+            -e "s|^#\?baseurl=http://download.example/pub/fedora/linux|baseurl=${FEDORA_MIRROR}|g" \
+            "$r"; \
+    done
 
 # Install dependencies for Qubes Builder
 RUN dnf -y update && \
