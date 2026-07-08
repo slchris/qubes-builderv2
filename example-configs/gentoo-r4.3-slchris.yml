@@ -40,9 +40,13 @@ components:
         - CCA190F75CEA7FAB8A49F00045D10727855239D3
 
 executor:
-  type: docker
+  # Fedora ships podman (rootless), not docker. builderv2 supports it natively:
+  # executor type 'podman' uses PodmanClient. base_url points at the rootless
+  # podman socket (systemctl --user enable --now podman.socket).
+  type: podman
   options:
     image: "qubes-builder-fedora:latest"
+    base_url: "unix:///run/user/1000/podman/podman.sock"
 
 stages:
   - fetch
