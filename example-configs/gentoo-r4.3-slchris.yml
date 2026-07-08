@@ -32,8 +32,10 @@ templates:
 components:
   - builder-gentoo:
       packages: False
-      url: https://github.com/slchris/qubes-gentoo-template
-      # the build scripts live under builder-gentoo/ in the template repo
+      # Standalone builder-gentoo repo (repo root = build scripts, as builderv2
+      # expects: sources/builder-gentoo/scripts/00_prepare.sh). The template repo
+      # had them one dir too deep.
+      url: https://github.com/slchris/qubes-builder-gentoo
       branch: main
       maintainers:
         # Chris Su (Veritas) <Chris@lesscrowds.org>
