@@ -49,7 +49,11 @@ executor:
   # user is added to a group that can read /run/podman/podman.sock.
   type: podman
   options:
-    image: "qubes-builder-fedora:latest"
+    # Fully-qualified image name (localhost/...). podman stores a locally-built
+    # `-t qubes-builder-fedora:latest` under the localhost/ registry; the libpod
+    # API's GET /images/<name>/json with short-name-mode=enforcing can fail to
+    # resolve the bare short name (podman.errors APIError), so name it in full.
+    image: "localhost/qubes-builder-fedora:latest"
     base_url: "unix:///run/podman/podman.sock"
 
 stages:
