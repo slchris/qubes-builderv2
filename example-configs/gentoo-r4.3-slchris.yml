@@ -21,12 +21,12 @@ debug: true
 verbose: true
 qubes-release: r4.3
 
-template-root-size: "30G"
+template-root-size: "40G"
 
 templates:
-  - gentoo-minimal:
+  - gentoo-xfce:
       dist: gentoo
-      flavor: minimal
+      flavor: xfce
       timeout: 86400
 
 components:
